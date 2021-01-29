@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
             }
             if (Input.GetKeyUp(KeyCode.Q))
             {
-                gameObject.transform.DetachChildren();
+                pushedItems.transform.SetParent(null);
             }
 
         }
