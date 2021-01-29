@@ -5,33 +5,49 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public CharacterController controller;
     public float speed;
-    Rigidbody rb;
+    //Rigidbody rb;
     public GameObject pushedItems;
-    bool heldByPlayer = false;
+     public bool heldByPlayer = false;
+   public float turnSmoothTime=0.1f;
+    float turnSmoothVelocity;
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+       // rb = GetComponent<Rigidbody>();
     }
 
 
     private void Update()
     {
-        var input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        Vector3 velocity = input.normalized * speed;
-        rb.velocity = velocity; // Using RigidBody velocity instead of generic Transform in order to prevent jitter when interacting with physics objects
-        rb.rotation = Quaternion.LookRotation(input);
+        var input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+       //  Vector3 velocity = input.normalized * speed;
+        if (input.magnitude >= 0.1f)
+        {
+            float targetAngle = Mathf.Atan2(input.x, input.z) * Mathf.Rad2Deg;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+          //  rb.velocity = velocity; // Using RigidBody velocity instead of generic Transform in order to prevent jitter when interacting with physics objects
+
+            transform.rotation = Quaternion.Euler(0f, angle,0f);
+            controller.Move(input * speed * Time.deltaTime);
+        }
 
 
         if (heldByPlayer)
         {
-            if (Input.GetKey(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Q))
             {
-                pushedItems.transform.position = gameObject.transform.position;
+
+                pushedItems.transform.SetParent(gameObject.transform);
 
             }
-          
+            if (Input.GetKeyUp(KeyCode.Q))
+            {
+                gameObject.transform.DetachChildren();
+            }
+
         }
+
     }
 
 
@@ -41,7 +57,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (other.gameObject.tag == "PChair")
         {
-
             heldByPlayer = true;
 
         }
@@ -52,9 +67,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.gameObject.tag == "PChair")
         {
-
             heldByPlayer = false;
 
         }
     }
+
+
 }
