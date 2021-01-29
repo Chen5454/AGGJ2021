@@ -9,9 +9,13 @@ public class PlayerMovement : MonoBehaviour
     public float speed;
     //Rigidbody rb;
     public GameObject pushedItems;
-     public bool heldByPlayer = false;
-   public float turnSmoothTime=0.1f;
+    public bool heldByPlayer = false;
+    public float turnSmoothTime=0.1f;
     float turnSmoothVelocity;
+
+
+
+
     private void Start()
     {
        // rb = GetComponent<Rigidbody>();
@@ -38,11 +42,13 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q))
             {
 
+                speed = 2;
                 pushedItems.transform.SetParent(gameObject.transform);
 
             }
             if (Input.GetKeyUp(KeyCode.Q))
             {
+                speed = 5;
                 pushedItems.transform.SetParent(null);
             }
 

@@ -13,24 +13,22 @@ public class PushedItems : MonoBehaviour
 
     private void Start()
     {
-        //itemCollider.isTrigger = false;
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.gameObject.tag == "Player")
-    //    {
-    //        itemTrigger.isTrigger = true;
-    //    }
-    //}
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            itemTrigger.isTrigger = true;
+        }
+    }
 
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.gameObject.tag == "Player")
-    //    {
-    //        itemTrigger.isTrigger = false;
-    //    }
-    //}
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+        }
+    }
 
-  
+
 }
