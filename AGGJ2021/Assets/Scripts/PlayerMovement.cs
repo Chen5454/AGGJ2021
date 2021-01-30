@@ -108,9 +108,9 @@ public class PlayerMovement : MonoBehaviour
         {
             if (collision.gameObject.tag == "Lost World Pickup")
             {
+                     heldByPlayer = true;
                 if (pushedItems != collision.gameObject)
                 {
-                     heldByPlayer = true;
                     pushedItems.transform.SetParent(null);
                 }
                 pushedItems = collision.gameObject;
