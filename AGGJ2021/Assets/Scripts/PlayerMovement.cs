@@ -12,12 +12,13 @@ public class PlayerMovement : MonoBehaviour
     public bool heldByPlayer = false;
     public float turnSmoothTime=0.1f;
     float turnSmoothVelocity;
-
+    private Animator anim;
 
 
 
     private void Start()
     {
+        anim = GetComponent<Animator>();
        // rb = GetComponent<Rigidbody>();
     }
 
@@ -34,6 +35,13 @@ public class PlayerMovement : MonoBehaviour
 
             transform.rotation = Quaternion.Euler(0f, angle,0f);
             controller.Move(input * speed * Time.deltaTime);
+            anim.SetBool("Walking",true);
+           // anim.SetTrigger("DoWalk");
+        }
+        else
+        {
+            anim.SetBool("Walking",false);
+
         }
 
 
@@ -44,15 +52,37 @@ public class PlayerMovement : MonoBehaviour
 
                 speed = 2;
                 pushedItems.transform.SetParent(gameObject.transform);
+                anim.SetBool("IsPushing", true);
 
             }
             if (Input.GetKeyUp(KeyCode.Q))
             {
                 speed = 5;
                 pushedItems.transform.SetParent(null);
+                anim.SetBool("IsPushing", false);
+                
+
             }
 
         }
+
+
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            speed = 1;
+            anim.SetBool("IsCrouch", true);
+
+        }
+
+
+        if (Input.GetKeyUp(KeyCode.LeftControl))
+        {
+            anim.SetBool("IsCrouch", false);
+            speed = 5;
+        }
+
+
+
 
     }
 
