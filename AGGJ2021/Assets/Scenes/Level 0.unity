@@ -2298,7 +2298,7 @@ PrefabInstance:
     - target: {fileID: 4354385562569014505, guid: d44142eead7b5e14b94495e4a28cc478,
         type: 3}
       propertyPath: speed
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4354385562569014505, guid: d44142eead7b5e14b94495e4a28cc478,
         type: 3}
@@ -4180,7 +4180,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1056120982340450, guid: 6d6b709c20acb1840a72d83aba78580e, type: 3}
       propertyPath: m_TagString
-      value: Real World Pickup
+      value: Lost World Pickup
       objectReference: {fileID: 0}
     - target: {fileID: 1101764288082712, guid: 6d6b709c20acb1840a72d83aba78580e, type: 3}
       propertyPath: m_TagString

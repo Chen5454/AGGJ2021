@@ -53,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
         //Debug.Log("space: " + Input.GetKey(KeyCode.Space) + " colliding: " + heldByPlayer + " transition: " + dropNow);
         if (Input.GetKey(KeyCode.Space) && heldByPlayer && !dropNow)
         {
-            speed = 3;
+            speed = 2;
             float fade = GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().fade;
             if(pushedItems.tag == "Real World Pickup" && fade == 1)
             {
@@ -73,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
 
         else
         {
-            speed = 5;
+            speed = 4;
             pushedItems.transform.SetParent(null);
             anim.SetBool("IsPushing", false);
         }
@@ -86,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.LeftControl))
         {
             anim.SetBool("IsCrouch", false);
-            speed = 5;
+            speed = 4;
         }
     }
 
