@@ -29,6 +29,7 @@ public class WorldsManager : MonoBehaviour
         audioSources = GetComponents<AudioSource>();
         realWorld = audioSources[0];
         lostWorld = audioSources[1];
+        Debug.Log(lostWorld);
         realWorldClip = (AudioClip)Resources.Load("Sounds/gamekid_realworldnew2");
         lostWorldClip = (AudioClip)Resources.Load("Sounds/gamekid_surealworldnew1");
         realWorld.clip = realWorldClip;
