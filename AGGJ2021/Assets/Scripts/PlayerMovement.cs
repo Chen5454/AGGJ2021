@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public CharacterController controller;
+    CharacterController controller;
     public float speed;
-    //Rigidbody rb;
-    public GameObject pushedItems;
+    Rigidbody rb;
+    GameObject pushedItems;
     public bool heldByPlayer = false;
     public float turnSmoothTime=0.1f;
     float turnSmoothVelocity;
@@ -18,35 +18,34 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-       // rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
     }
 
 
     private void Update()
     {
-        var input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-       //  Vector3 velocity = input.normalized * speed;
+        var input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        Vector3 velocity = input.normalized * speed;
+        rb.velocity = velocity; // Using RigidBody velocity instead of generic Transform in order to prevent jitter when interacting with physics objects
         if (input.magnitude >= 0.1f)
         {
-            float targetAngle = Mathf.Atan2(input.x, input.z) * Mathf.Rad2Deg;
+            float targetAngle = Mathf.Atan2(velocity.x, velocity.z) * Mathf.Rad2Deg;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-          //  rb.velocity = velocity; // Using RigidBody velocity instead of generic Transform in order to prevent jitter when interacting with physics objects
 
-            transform.rotation = Quaternion.Euler(0f, angle,0f);
-            controller.Move(input * speed * Time.deltaTime);
+            rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
         }
 
 
         if (heldByPlayer)
         {
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-
-                speed = 2;
+                speed = 3;
                 pushedItems.transform.SetParent(gameObject.transform);
-
             }
-            if (Input.GetKeyUp(KeyCode.Q))
+            if (Input.GetKeyUp(KeyCode.Space))
             {
                 speed = 5;
                 pushedItems.transform.SetParent(null);
@@ -56,25 +55,43 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-
-
-        if (other.gameObject.tag == "PChair")
+        if(GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().isInRealWorld)
         {
-            heldByPlayer = true;
-
+            if (collision.gameObject.tag == "Real World Pickup")
+            {
+                heldByPlayer = true;
+                pushedItems = collision.gameObject;
+            }
+        }
+        else
+        {
+            if (collision.gameObject.tag == "Lost World Pickup")
+            {
+                heldByPlayer = true;
+                pushedItems = collision.gameObject;
+            }
         }
 
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == "PChair")
-        {
-            heldByPlayer = false;
 
+    private void OnCollisionExit(Collision collision)
+    {
+        if (GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().isInRealWorld)
+        {
+            if (collision.gameObject.tag == "Real World Pickup")
+            {
+                heldByPlayer = false;
+            }
+        }
+        else
+        {
+            if (collision.gameObject.tag == "Lost World Pickup")
+            {
+                heldByPlayer = false;
+            }
         }
     }
 

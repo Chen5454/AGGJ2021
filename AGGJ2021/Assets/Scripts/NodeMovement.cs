@@ -13,6 +13,8 @@ public class NodeMovement : MonoBehaviour
     float Timer;
     Vector3 currNode;
 
+    float turnSmoothTime = 0.5f;
+    float turnSmoothVelocity;
 
     // Start is called before the first frame update
     void Start()
@@ -39,7 +41,11 @@ public class NodeMovement : MonoBehaviour
 
             transform.position += step;
 
-            
+
+            float targetAngle = Mathf.Atan2(step.x, step.z) * Mathf.Rad2Deg;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+            transform.eulerAngles = new Vector3(0f, angle, 0f);
+
         }
         else
         {
@@ -48,12 +54,12 @@ public class NodeMovement : MonoBehaviour
             path.MoveToNextNode();
 
 
-            Vector3 diff = (path.getCurrNode() - transform.position).normalized;
+            //Vector3 diff = (path.getCurrNode() - transform.position).normalized;
 
-            float angle = Vector3.SignedAngle(Vector3.forward, diff, Vector3.up);
+            //float angle = Vector3.SignedAngle(Vector3.forward, diff, Vector3.up);
             //angle += 90;
 
-            transform.rotation = Quaternion.Euler(0, angle, 0);
+            //transform.rotation = Quaternion.Euler(0, angle, 0);
 
         }
     }

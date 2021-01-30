@@ -20,26 +20,26 @@ public class LOSChecker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (HasConeOfSight())
         {
-            HasConeOfSight();
+            GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().isInRealWorld = true;
         }
     }
 
     public bool HasConeOfSight()
     {
-        Debug.Log("orig position: " + transform.position);
-        Debug.Log("target position: " + Target.position);
+        //Debug.Log("orig position: " + transform.position);
+        //Debug.Log("target position: " + Target.position);
 
         Vector3 dist = transform.position - Target.position;
 
-        Debug.Log("distance: " + dist);
+        //Debug.Log("distance: " + dist);
 
         Vector3 forward = transform.rotation * Vector3.forward;
 
-        Debug.Log("forward: " + forward);
+        //Debug.Log("forward: " + forward);
 
-        Debug.Log("dist magnitude: " + dist.magnitude);
+        //Debug.Log("dist magnitude: " + dist.magnitude);
 
         if (dist.magnitude <= MaxMagnitude)
         {
@@ -55,7 +55,11 @@ public class LOSChecker : MonoBehaviour
 
             if (angle <= coneAngle)
             {
-                return true;
+                if (HasLineOfSight(Target))
+                {
+                    return true;
+                }
+
             }
         }
 
@@ -64,10 +68,12 @@ public class LOSChecker : MonoBehaviour
     }
 
 
-    public bool HasLineOfSight()
+    public bool HasLineOfSight(Transform target)
     {
         RaycastHit hitInfo;
-        Ray ray = new Ray(transform.position, transform.rotation * Vector3.forward);
+        Vector3 direction = target.position - transform.position;
+        Ray ray = new Ray(transform.position, direction);
+        Debug.DrawRay(transform.position, direction);
 
         //int layerMask = PhaseThroughWalls ? ~(1 << 11) : ~1;
 

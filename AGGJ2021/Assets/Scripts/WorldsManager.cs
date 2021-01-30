@@ -12,6 +12,8 @@ public class WorldsManager : MonoBehaviour
     AudioClip lostWorldClip;
 
     public bool isInRealWorld = true;
+    bool prevFrameWorld = true;
+    bool prevPrevFrameWorld = true;
 
     public float fadeTime = 2f;
     float fadeStartTime;
@@ -29,7 +31,6 @@ public class WorldsManager : MonoBehaviour
         audioSources = GetComponents<AudioSource>();
         realWorld = audioSources[0];
         lostWorld = audioSources[1];
-        Debug.Log(lostWorld);
         realWorldClip = (AudioClip)Resources.Load("Sounds/gamekid_realworldnew2");
         lostWorldClip = (AudioClip)Resources.Load("Sounds/gamekid_surealworldnew1");
         realWorld.clip = realWorldClip;
@@ -46,11 +47,13 @@ public class WorldsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if(isInRealWorld != prevPrevFrameWorld)
         {
             fadeStartTime = Time.time;
-            isInRealWorld = !isInRealWorld; //Just so we can get a state on it
         }
+        prevPrevFrameWorld = prevFrameWorld;
+        prevFrameWorld = isInRealWorld;
+ 
 
         float timePassed = Time.time - fadeStartTime;
         float fade = Mathf.Lerp((isInRealWorld ? 0 : 1), (isInRealWorld ? 1 : 0), timePassed / fadeTime);
@@ -61,14 +64,17 @@ public class WorldsManager : MonoBehaviour
         realWorldFade = fade;
         lostWorldFade = 1 - fade;
         TextureFade("Real World", realWorldFade);
+        TextureFade("Real World Pickup", realWorldFade);
         TextureFade("Lost World", lostWorldFade);
+        TextureFade("Lost World Pickup", lostWorldFade);
 
-        if(!realWorld.isPlaying && !lostWorld.isPlaying) //If tracks finish play them again simultaniously
+
+        if (!realWorld.isPlaying && !lostWorld.isPlaying) //If tracks finish play them again simultaniously
         {
             realWorld.Play();
             lostWorld.Play();
         }
-
+        isInRealWorld = false;
     }
 
     IEnumerator FadeTo(float aValue, float bValue, float overTime)
@@ -101,6 +107,7 @@ public class WorldsManager : MonoBehaviour
                     m.color = newColor;
                 }
             }
+
         }
         else
         {
