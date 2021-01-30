@@ -36,7 +36,7 @@ public class NodeMovement : MonoBehaviour
 
         if ((transform.position - currNode).magnitude > 0.01)
         {
-            Debug.Log(currNode);
+            //Debug.Log(currNode);
             Vector3 currPos = transform.position;
             Vector3 step = (currNode - currPos).normalized * MoveSpeed * Time.deltaTime;
 
