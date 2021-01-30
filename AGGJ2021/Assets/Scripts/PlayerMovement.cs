@@ -6,11 +6,10 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
 
-    CharacterController controller;
+   public CharacterController controller;
     public float speed;
 
 
-    Rigidbody rb;
     GameObject pushedItems;
     public bool heldByPlayer = false;
     public float turnSmoothTime=0.1f;
@@ -23,9 +22,6 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
 
-        controller = GetComponent<CharacterController>();
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
         anim = GetComponent<Animator>();
         pushedItems = GameObject.Find("Player");
     }
@@ -35,19 +31,15 @@ public class PlayerMovement : MonoBehaviour
     {
 
 
-        var input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        Vector3 velocity = input.normalized * speed;
-        rb.velocity = velocity; // Using RigidBody velocity instead of generic Transform in order to prevent jitter when interacting with physics objects
-        if (input.magnitude >= 0.1f)
+        var direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        if (direction.magnitude >= 0.1f)
         {
 
-            float targetAngle = Mathf.Atan2(velocity.x, velocity.z) * Mathf.Rad2Deg;
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
 
-
-
-
-            rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            controller.Move(direction * speed * Time.deltaTime);
             anim.SetBool("Walking",true);
            // anim.SetTrigger("DoWalk");
         }
@@ -73,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
+                dropNow = !dropNow;
                 pushedItems.transform.SetParent(null);
             }
             anim.SetBool("IsPushing", true);
@@ -104,7 +97,6 @@ public class PlayerMovement : MonoBehaviour
             if (collision.gameObject.tag == "Real World Pickup")
             {
 
-                heldByPlayer = true;
                 if (pushedItems != collision.gameObject)
                 {
                     pushedItems.transform.SetParent(null);
@@ -116,9 +108,9 @@ public class PlayerMovement : MonoBehaviour
         {
             if (collision.gameObject.tag == "Lost World Pickup")
             {
-                heldByPlayer = true;
                 if (pushedItems != collision.gameObject)
                 {
+                     heldByPlayer = true;
                     pushedItems.transform.SetParent(null);
                 }
                 pushedItems = collision.gameObject;
@@ -134,7 +126,6 @@ public class PlayerMovement : MonoBehaviour
             if (collision.gameObject.tag == "Real World Pickup")
             {
                 heldByPlayer = false;
-                pushedItems = GameObject.Find("Player");
             }
         }
         else
@@ -142,7 +133,6 @@ public class PlayerMovement : MonoBehaviour
             if (collision.gameObject.tag == "Lost World Pickup")
             {
                 heldByPlayer = false;
-                pushedItems = GameObject.Find("Player");
             }
         }
     }
