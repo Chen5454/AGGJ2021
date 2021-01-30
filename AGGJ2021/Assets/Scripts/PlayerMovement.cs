@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     public float turnSmoothTime=0.1f;
     float turnSmoothVelocity;
     private Animator anim;
+    public bool dropNow = false;
 
 
 
@@ -26,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         anim = GetComponent<Animator>();
+        pushedItems = GameObject.Find("Player");
     }
 
 
@@ -56,27 +58,33 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        if (heldByPlayer)
+        //Debug.Log("space: " + Input.GetKey(KeyCode.Space) + " colliding: " + heldByPlayer + " transition: " + dropNow);
+        if (Input.GetKey(KeyCode.Space) && heldByPlayer && !dropNow)
         {
-
-            if (Input.GetKeyDown(KeyCode.Space))
+            speed = 3;
+            float fade = GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().fade;
+            if(pushedItems.tag == "Real World Pickup" && fade == 1)
             {
-
-                speed = 3;
                 pushedItems.transform.SetParent(gameObject.transform);
-                anim.SetBool("IsPushing", true);
             }
-
-            if (Input.GetKeyUp(KeyCode.Space))
+            else if (pushedItems.tag == "Lost World Pickup" && fade == 0)
             {
-                speed = 5;
-                pushedItems.transform.SetParent(null);
-                anim.SetBool("IsPushing", false);
-                
-
+                pushedItems.transform.SetParent(gameObject.transform);
             }
-
+            else
+            {
+                pushedItems.transform.SetParent(null);
+            }
+            anim.SetBool("IsPushing", true);
         }
+
+        else
+        {
+            speed = 5;
+            pushedItems.transform.SetParent(null);
+            anim.SetBool("IsPushing", false);
+        }
+
 
 
         if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -93,29 +101,33 @@ public class PlayerMovement : MonoBehaviour
             speed = 5;
         }
 
-
-
-
     }
 
 
     private void OnCollisionEnter(Collision collision)
     {
-
-        if(GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().isInRealWorld)
+        if(GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().fade == 1)
         {
-
             if (collision.gameObject.tag == "Real World Pickup")
             {
+
                 heldByPlayer = true;
+                if (pushedItems != collision.gameObject)
+                {
+                    pushedItems.transform.SetParent(null);
+                }
                 pushedItems = collision.gameObject;
             }
         }
-        else
+        else if (GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().fade == 0)
         {
             if (collision.gameObject.tag == "Lost World Pickup")
             {
                 heldByPlayer = true;
+                if (pushedItems != collision.gameObject)
+                {
+                    pushedItems.transform.SetParent(null);
+                }
                 pushedItems = collision.gameObject;
             }
         }

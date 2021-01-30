@@ -12,12 +12,9 @@ public class WorldsManager : MonoBehaviour
     AudioClip lostWorldClip;
 
     public bool isInRealWorld = true;
-    bool prevFrameWorld = true;
-    bool prevPrevFrameWorld = true;
 
-    public float fadeTime = 2f;
-    float fadeStartTime;
-
+    public float fade = 1f;
+    public float fadeRate = 0.01f;
 
     float realWorldFade = 1f;
     float lostWorldFade = 0f;
@@ -39,24 +36,26 @@ public class WorldsManager : MonoBehaviour
         lostWorld.Play();
         realWorld.volume = 1f;
         lostWorld.volume = 0f;
-
-        // So that we start already fully faded
-        fadeStartTime = 0 - fadeTime;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(isInRealWorld != prevPrevFrameWorld)
+        if (fade > 0)
         {
-            fadeStartTime = Time.time;
+            fade += - fadeRate;
         }
-        prevPrevFrameWorld = prevFrameWorld;
-        prevFrameWorld = isInRealWorld;
- 
+        fade = Mathf.Lerp(0, 1, fade);
 
-        float timePassed = Time.time - fadeStartTime;
-        float fade = Mathf.Lerp((isInRealWorld ? 0 : 1), (isInRealWorld ? 1 : 0), timePassed / fadeTime);
+
+        if (fade == 1 || fade == 0)
+        {
+            GameObject.Find("Player").GetComponent<PlayerMovement>().dropNow = false;
+        }
+        else
+        {
+            GameObject.Find("Player").GetComponent<PlayerMovement>().dropNow = true;
+        }
 
         realWorld.volume = fade;
         lostWorld.volume = 1 - fade;

@@ -14,7 +14,7 @@ public class LOSChecker : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Target = GameObject.Find("Player").transform;
     }
 
     // Update is called once per frame
@@ -22,7 +22,9 @@ public class LOSChecker : MonoBehaviour
     {
         if (HasConeOfSight())
         {
-            GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().isInRealWorld = true;
+            float fade = GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().fade;
+            float fadeRate = GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().fadeRate;
+            GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().fade = fade + fadeRate * 2;
         }
     }
 
@@ -51,7 +53,7 @@ public class LOSChecker : MonoBehaviour
                 angle = Math.Abs(angle - 360);
             }
 
-            Debug.Log("angle: " + angle);
+            //Debug.Log("angle: " + angle);
 
             if (angle <= coneAngle)
             {
