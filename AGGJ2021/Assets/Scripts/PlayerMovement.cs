@@ -84,27 +84,20 @@ public class PlayerMovement : MonoBehaviour
             pushedItems.transform.SetParent(null);
             anim.SetBool("IsPushing", false);
         }
-
-
-
         if (Input.GetKey(KeyCode.LeftControl))
         {
             speed = 1;
             anim.SetBool("IsCrouch", true);
 
         }
-
-
         if (Input.GetKeyUp(KeyCode.LeftControl))
         {
             anim.SetBool("IsCrouch", false);
             speed = 5;
         }
-
     }
-    
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if(GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().fade == 1)
         {
@@ -133,18 +126,15 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
-
-
-
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider collision)
     {
-
         if (GameObject.Find("Worlds Manager").GetComponent<WorldsManager>().isInRealWorld)
         {
 
             if (collision.gameObject.tag == "Real World Pickup")
             {
                 heldByPlayer = false;
+                pushedItems = GameObject.Find("Player");
             }
         }
         else
@@ -152,6 +142,7 @@ public class PlayerMovement : MonoBehaviour
             if (collision.gameObject.tag == "Lost World Pickup")
             {
                 heldByPlayer = false;
+                pushedItems = GameObject.Find("Player");
             }
         }
     }

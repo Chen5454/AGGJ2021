@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6827570031096572250}
   m_Layer: 0
-  m_Name: Single Agent 1
+  m_Name: Single Agent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -468,7 +468,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 5
+  m_Intensity: 1
   m_Range: 100
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
